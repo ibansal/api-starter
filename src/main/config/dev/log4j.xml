@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" >
+<log4j:configuration>
+	<appender name="stdout" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{E MMM dd HH:mm:ss yyyy} %c %-4p %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="appFileAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="/mnt/logs/snapadlog.log" />
+		<!-- Rollover at the top of every hour. -->
+		<param name="DatePattern" value="'.'yyyy-MM-dd-HH" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ssz}[%c{1}]|%m%n" />
+		</layout>
+	</appender>
+
+	<appender name="transaction_infoFileAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="/mnt/logs/transactions.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd-HH" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%m%n" />
+		</layout>
+	</appender>
+
+	<appender name="ASYNC_TXN_INFO" class="org.apache.log4j.AsyncAppender">
+		<param name="BufferSize" value="500" />
+		<appender-ref ref="transaction_infoFileAppender" />
+	</appender>
+
+	<appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
+		<param name="BufferSize" value="500" />
+		<appender-ref ref="appFileAppender" />
+	</appender>
+
+	<logger name="com.snapdeal" additivity="false">
+		<level value="debug" />
+		<appender-ref ref="stdout" />
+	</logger>
+	
+	<logger name="transactions" additivity="false">
+		<level value="debug" />
+		<appender-ref ref="ASYNC_TXN_INFO" />
+	</logger>
+	
+	<root>
+		<level value="info" />
+		<appender-ref ref="stdout" />
+	</root>
+</log4j:configuration>
